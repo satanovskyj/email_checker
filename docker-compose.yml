@@ -1,0 +1,11 @@
+version: "2"
+
+services:
+  api:
+    build: .
+    restart: always
+    command: ["uwsgi", "--http", "0.0.0.0:5050", "--wsgi-file", "runserver.py", "--callable", "app", "--catch-exceptions", "--processes", "1", "--py-autoreload", "3"]
+    ports:
+      - "5050:5050"
+    volumes:
+      - "./api:/app/api"

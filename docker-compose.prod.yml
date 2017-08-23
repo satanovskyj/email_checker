@@ -1,0 +1,20 @@
+version: "2"
+
+services:
+  api:
+    build: .
+    restart: always
+    command: ["uwsgi", "--socket", "0.0.0.0:5050", "--wsgi-file", "runserver.py", "--callable", "app", "--catch-exceptions", "--processes", "4", "--threads", "2"]
+    volumes:
+      - "./api:/app/api"
+
+  nginx:
+    image: nginx:1.11-alpine
+    restart: always
+    command: ["nginx", "-g", "daemon off;"]
+    ports:
+      - "80:80"
+    volumes:
+      - "./nginx/conf.d:/etc/nginx/conf.d"
+    links:
+      - "api"
