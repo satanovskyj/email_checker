@@ -13,10 +13,11 @@ class Checker(object):
     SLEEP_TIME = 1
     MAX_ATTEMPTS = 2
 
-    SMTP_PORTS = [25, 587, 465]
     MX_RECORD = 'MX'
+
+    DEFAULT_TIMEOUT = 3
     STATUS_SUCCEEDED = 250
-    DEFAULT_TIMEOUT = 10
+    SMTP_PORTS = [25, 587, 465]
 
     def run(self, email):
         email_hostname = email.split('@')[-1]
