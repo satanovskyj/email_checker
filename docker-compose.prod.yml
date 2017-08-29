@@ -2,11 +2,11 @@ version: "2"
 
 services:
   api:
-    build: .
+    build: ./api
     restart: always
     command: ["uwsgi", "--socket", "0.0.0.0:5050", "--wsgi-file", "runserver.py", "--callable", "app", "--catch-exceptions", "--processes", "4", "--threads", "2"]
     volumes:
-      - "./api:/app/api"
+      - "./api/api:/app/api"
 
   nginx:
     image: nginx:1.11-alpine
