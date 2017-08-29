@@ -3,15 +3,12 @@
 import DNS
 import smtplib
 
-
-class EnumBool:
-
-    NO = 'no'
-    YES = 'yes'
+import helpers
 
 
 class Checker(object):
 
+    MAX_ATTEMPTS = 3
     MX_RECORD = 'MX'
     STATUS_SUCCEEDED = 250
 
@@ -19,7 +16,7 @@ class Checker(object):
         email_hostname = email.split('@')[-1]
         mx_records = self._check_mx_record(email_hostname)
         if not mx_records:
-            return EnumBool.NO
+            return helpers.EnumBool.NO
 
         for mx_record in mx_records:
             check_result = self._check_mailbox(email, unicode(mx_record[1]))
@@ -28,7 +25,7 @@ class Checker(object):
 
             return check_result
 
-        return EnumBool.NO
+        return helpers.EnumBool.UNKNOWN
 
     def _check_mx_record(self, hostname):
         try:
@@ -36,6 +33,7 @@ class Checker(object):
         except DNS.ServerError:
             return
 
+    @helpers.retry(MAX_ATTEMPTS)
     def _check_mailbox(self, email, mx_record):
         smtp_server = smtplib.SMTP()
         smtp_server.connect(mx_record)
@@ -49,9 +47,9 @@ class Checker(object):
         smtp_server.quit()
 
         if code == 250:
-            return EnumBool.YES
+            return helpers.EnumBool.YES
 
-        return EnumBool.NO
+        return helpers.EnumBool.NO
 
 
 checker = Checker()
