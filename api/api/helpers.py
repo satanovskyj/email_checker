@@ -10,7 +10,7 @@ class EnumBool:
     YES = 'yes'
 
 
-def retry(max_attempts):
+def retry(max_attempts, sleep_time):
     def retry_decorator(function):
         def _wrapper(*args, **kwargs):
             attempt = 0
@@ -22,7 +22,7 @@ def retry(max_attempts):
                     if attempt >= max_attempts:
                         return
 
-                    time.sleep(2)
+                    time.sleep(sleep_time)
 
         return _wrapper
 
