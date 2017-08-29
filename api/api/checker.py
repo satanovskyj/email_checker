@@ -15,7 +15,7 @@ class Checker(object):
 
     MX_RECORD = 'MX'
 
-    DEFAULT_TIMEOUT = 3
+    DEFAULT_TIMEOUT = 8
     STATUS_SUCCEEDED = 250
     SMTP_PORTS = [25, 587, 465]
 
@@ -43,10 +43,10 @@ class Checker(object):
 
     @helpers.retry(max_attempts=MAX_ATTEMPTS, sleep_time=SLEEP_TIME)
     def _check_mailbox(self, email, mx_record, port):
-        smtp_server = smtplib.SMTP(timeout=self.DEFAULT_TIMEOUT)
-        smtp_server.connect(mx_record, port)
-        status, _ = smtp_server.helo()
-        if status != self.STATUS_SUCCEEDED:
+        smtp_server = smtplib.SMTP(mx_record, port, timeout=self.DEFAULT_TIMEOUT)
+        try:
+            smtp_server.ehlo_or_helo_if_needed()
+        except smtplib.SMTPHeloError:
             smtp_server.quit()
             return
 
